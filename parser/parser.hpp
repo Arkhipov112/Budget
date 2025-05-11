@@ -8,6 +8,7 @@
 class parser final {
 public:
 	static expense_tree parse_expenses(std::istream& in);
+	static budget parse_budget(std::istream& in);
 
 private:
 	static std::string trim(const std::string& line);

@@ -3,7 +3,7 @@
 
 #include "expense.hpp"
 
-calendar::calendar() : day(0), month(0), year(0) {}
+calendar::calendar() noexcept : day(0), month(0), year(0) {}
 
 calendar::calendar(const std::string& dd_mm_yyyy) {
     std::vector<std::string> date;
@@ -74,7 +74,7 @@ int calendar::days_in_month(int month, int year) const noexcept {
 
 
 
-expense_node::expense_node() : amount(0) {}
+expense_node::expense_node() noexcept : amount(0) {}
 
 expense_node::expense_node(calendar date, const std::string& name, double amount)
 : date(date), name(name), amount(amount) {
@@ -136,7 +136,7 @@ expense_node* expense_node::get_or_create_child(const std::string& name) {
 
 
 
-std::vector<std::string> expense_tree::split_path(const std::string& path) {
+std::vector<std::string> expense_tree::split_path(const std::string& path) const {
     std::vector<std::string> nodes;
     
     std::istringstream iss(path);

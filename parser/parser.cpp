@@ -23,6 +23,29 @@ expense_tree parser::parse_expenses(std::istream& in) {
 	return res;
 }
 
+
+
+budget parser::parse_budget(std::istream& in) {
+	budget res;
+
+	std::string line;
+	while (std::getline(in, line)) {
+		std::vector<std::string> temp = parse(split(trim(line), " +"));
+
+		std::pair<std::vector<std::string>, double> pair;
+		for (int i = 0; i < temp.size() - 1; ++i) {
+			pair.first.push_back(temp[i]);
+		}
+		pair.second = std::stod(temp[temp.size() - 1]);
+
+		res.push_back(pair);
+	}
+
+	return res;
+}
+
+
+
 std::string parser::trim(const std::string& line) {
 	std::string res;
 
