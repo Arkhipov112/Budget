@@ -3,65 +3,57 @@
 #include <string>
 #include <vector>
 
-struct Date final {
+struct сalendar final {
 public:
-    Date() = default;
-    Date(const std::string& dd_mm_yyyy);
+    сalendar() noexcept;
+    сalendar(const std::string& dd_mm_yyyy);
 
-    int getDay() const noexcept;
-    int getMonth() const noexcept;
-    int getYear() const noexcept;
+    int get_day() const noexcept;
+    int get_month() const noexcept;
+    int get_year() const noexcept;
 
 private:
-    bool isLeapYear(int year) const noexcept;
-    int daysInMonth(int month, int year) const noexcept;
+    bool is_leap_year(int year) const noexcept;
+    int days_in_month(int month, int year) const noexcept;
 
     int day, month, year;
 };
 
 
 
-struct ExpenseNode final {
+struct expense_node final {
 public:
-    ExpenseNode() = default;
-    ExpenseNode(Date date, const std::string& name, double amount);
+    expense_node() noexcept;
+    expense_node(сalendar data, const std::string& name, double amount);
 
-    ExpenseNode* addChild(const ExpenseNode& en);
+    void add_expense(сalendar date, double amount);
 
-    Date getDate() const noexcept;
-    std::string getName() const noexcept;
-    double getAmount() const noexcept;
-    
-    ExpenseNode* getChild(const std::string& name);
-    const std::map<std::string, ExpenseNode>& getChildren() { 
-        return children;
-    }
+    сalendar get_date() const noexcept;
+    std::string get_name() const noexcept;
+    double get_amount() const noexcept;
 
-    ExpenseNode* getOrCreateChild(const std::string& name) {
-        return &children[name];
-    }
+    expense_node* get_child(const std::string& name);
+    std::vector<expense_node*> get_children();
 
-    void addAmount(double val) {
-        amount += val;
-    }
+    expense_node* get_or_create_child(const std::string& name);
 
 private:
-    Date date;
+    сalendar date;
     std::string name;
     double amount;
 
-    std::map<std::string, ExpenseNode> children;
+    std::map<std::string, expense_node> children;
 };
 
 
 
-struct ExpenseTree {
+struct expense_tree final {
 public:
-    ExpenseNode* findNode(const std::string& path);
-    void addNode(const std::string& path, double amount);
+    void add_expense(сalendar date, const std::string& path, double amount);
+    expense_node* find_expense(const std::string& path);
 
 private:
-    static std::vector<std::string> splitPath(const std::string& path);
+    std::vector<std::string> split_path(const std::string& path);
 
-    ExpenseNode root;
+    expense_node root;
 };

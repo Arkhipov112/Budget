@@ -4,7 +4,10 @@
 
 #include "expense.hpp"
 
-Date::Date(const std::string& dd_mm_yyyy) {
+сalendar::сalendar() noexcept
+: day(0), month(0), year(0) {}
+
+сalendar::сalendar(const std::string& dd_mm_yyyy) {
     std::vector<std::string> date;
     
     std::istringstream iss(dd_mm_yyyy);
@@ -23,31 +26,31 @@ Date::Date(const std::string& dd_mm_yyyy) {
     year = std::stoi(date[2]);
 
     if (year < 0) {
-        throw(std::invalid_argument("Year cannot be negative"));
+        throw (std::invalid_argument("Year cannot be negative"));
     }
 
     if ((month < 1) || (month > 12)) {
         throw (std::invalid_argument("Month takes a value from 1 to 12"));
     }
 
-    if ((day < 1) || (day > daysInMonth(month, year))) {
+    if ((day < 1) || (day > days_in_month(month, year))) {
         throw (std::invalid_argument("Invalid day value"));
     }
 }
 
-int Date::getDay() const noexcept {
+int сalendar::get_day() const noexcept {
     return day;
 }
 
-int Date::getMonth() const noexcept {
+int сalendar::get_month() const noexcept {
     return month;
 }
 
-int Date::getYear() const noexcept {
+int сalendar::get_year() const noexcept {
     return year;
 }
 
-bool Date::isLeapYear(int year) const noexcept {
+bool сalendar::is_leap_year(int year) const noexcept {
     if (year % 4) {
         return false;
     }
@@ -61,10 +64,10 @@ bool Date::isLeapYear(int year) const noexcept {
     }
 }
 
-int Date::daysInMonth(int month, int year) const noexcept {
+int сalendar::days_in_month(int month, int year) const noexcept {
     static const int days[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-    if ((month == 2) && isLeapYear(year)) {
+    if ((month == 2) && is_leap_year(year)) {
         return days[1] + 1;
     }
 
@@ -73,47 +76,72 @@ int Date::daysInMonth(int month, int year) const noexcept {
 
 
 
-ExpenseNode::ExpenseNode(Date date, const std::string& name, double amount) 
+expense_node::expense_node() noexcept 
+: amount(amount) {}
+
+expense_node::expense_node(сalendar date, const std::string& name, double amount)
 : date(date), name(name), amount(amount) {
     if (name.empty()) {
-        throw(std::invalid_argument("Name cannot be empty"));
+        throw (std::invalid_argument("Name cannot be empty"));
     }
 
     else if (amount < 0) {
-        throw(std::invalid_argument("Amount cannot be negative"));
+        throw (std::invalid_argument("Amount cannot be negative"));
     }
 }
 
-ExpenseNode* ExpenseNode::addChild(const ExpenseNode& en) {
-    amount += en.getAmount();
-    return &children[en.getName()];
+void expense_node::add_expense(сalendar date, double amount) {
+    if (amount < 0) {
+        throw (std::invalid_argument("Amount cannot be negative"));
+    }
+
+    this->date = date;
+    this->amount += amount;
 }
 
-Date ExpenseNode::getDate() const noexcept {
+сalendar expense_node::get_date() const noexcept {
     return date;
 }
 
-std::string ExpenseNode::getName() const noexcept {
+std::string expense_node::get_name() const noexcept {
     return name;
 }
 
-double ExpenseNode::getAmount() const noexcept {
+double expense_node::get_amount() const noexcept {
     return amount;
 }
 
-ExpenseNode* ExpenseNode::getChild(const std::string& name) {
+expense_node* expense_node::get_child(const std::string& name) {
+    if (name.empty()) {
+        throw (std::invalid_argument("Name cannot be empty"));
+    }
+
     auto child = children.find(name);
     return (child != children.end()) ? &child->second : nullptr;
 }
 
+std::vector<expense_node*> expense_node::get_children() {
+    std::vector<expense_node*> res;
+
+    for (auto& child : children) {
+        res.push_back(&child.second);
+    }
+
+    return res;
+}
+
+expense_node* expense_node::get_or_create_child(const std::string& name) {
+    return &children[name];
+}
 
 
-std::vector<std::string> ExpenseTree::splitPath(const std::string& path) {
+
+std::vector<std::string> expense_tree::split_path(const std::string& path) {
     std::vector<std::string> nodes;
-
+    
     std::istringstream iss(path);
     std::string part;
-
+    
     while (std::getline(iss, part, ':')) {
         nodes.push_back(part);
     }
@@ -121,25 +149,29 @@ std::vector<std::string> ExpenseTree::splitPath(const std::string& path) {
     return nodes;
 }
 
-ExpenseNode* ExpenseTree::findNode(const std::string& path) {
-    std::vector<std::string> nodes = splitPath(path);
+void expense_tree::add_expense(сalendar date, const std::string& path, double amount) {
+    std::vector<std::string> nodes = split_path(path);
 
-    ExpenseNode* current = &root;
+    expense_node* current = &root;
 
-    for (const std::string& node : nodes) {
-        current = current->getChild(node);
-        if (!current) return nullptr;
+    for (const auto& node : nodes) {
+        current = current->get_or_create_child(node);
+        current->add_expense(date, amount);
+    }
+};
+
+expense_node* expense_tree::find_expense(const std::string& path) {
+    std::vector<std::string> nodes = split_path(path);
+
+    expense_node* current = &root;
+
+    for (const auto& node : nodes) {
+        current = current->get_child(node);
+        
+        if (!current) {
+            return nullptr;
+        }
     }
 
     return current;
-}
-
-void ExpenseTree::addNode(const std::string& path, double amount) {
-    std::vector<std::string> nodes = splitPath(path);
-    ExpenseNode* current = &root;
-
-    for (const std::string& node : nodes) {
-        current = current->getOrCreateChild(node);
-        current->addAmount(amount);
-    }
 }
