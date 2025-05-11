@@ -2,6 +2,27 @@
 
 #include "parser.hpp"
 
+namespace {
+	const int EXPENSES_PARSER_COUNT = 3;
+}
+
+expense_tree parser::parse_expenses(std::istream& in) {
+	expense_tree res;
+
+	std::string line;
+	while (std::getline(in, line)) {
+		std::vector<std::string> temp = parse(split(trim(line), " "));
+
+		if (temp.size() != EXPENSES_PARSER_COUNT) {
+			throw (std::invalid_argument("Does not match the type"));
+		}
+
+		res.add_expense(calendar(temp[0]), temp[1], std::stod(temp[2]));
+	}
+
+	return res;
+}
+
 std::string parser::trim(const std::string& line) {
 	std::string res;
 

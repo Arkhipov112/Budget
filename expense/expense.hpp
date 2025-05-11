@@ -3,10 +3,10 @@
 #include <string>
 #include <vector>
 
-struct сalendar final {
+struct calendar final {
 public:
-    сalendar() noexcept;
-    сalendar(const std::string& dd_mm_yyyy);
+    calendar();
+    calendar(const std::string& dd_mm_yyyy);
 
     int get_day() const noexcept;
     int get_month() const noexcept;
@@ -23,12 +23,12 @@ private:
 
 struct expense_node final {
 public:
-    expense_node() noexcept;
-    expense_node(сalendar data, const std::string& name, double amount);
+    expense_node();
+    expense_node(calendar data, const std::string& name, double amount);
 
-    void add_expense(сalendar date, double amount);
+    void update_expense(calendar date, double amount);
 
-    сalendar get_date() const noexcept;
+    calendar get_date() const noexcept;
     std::string get_name() const noexcept;
     double get_amount() const noexcept;
 
@@ -38,7 +38,7 @@ public:
     expense_node* get_or_create_child(const std::string& name);
 
 private:
-    сalendar date;
+    calendar date;
     std::string name;
     double amount;
 
@@ -49,7 +49,7 @@ private:
 
 struct expense_tree final {
 public:
-    void add_expense(сalendar date, const std::string& path, double amount);
+    void add_expense(calendar date, const std::string& path, double amount);
     expense_node* find_expense(const std::string& path);
 
 private:

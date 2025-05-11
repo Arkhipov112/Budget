@@ -1,13 +1,11 @@
 #include <sstream>
 #include <stdexcept>
-#include <vector>
 
 #include "expense.hpp"
 
-сalendar::сalendar() noexcept
-: day(0), month(0), year(0) {}
+calendar::calendar() : day(0), month(0), year(0) {}
 
-сalendar::сalendar(const std::string& dd_mm_yyyy) {
+calendar::calendar(const std::string& dd_mm_yyyy) {
     std::vector<std::string> date;
     
     std::istringstream iss(dd_mm_yyyy);
@@ -38,19 +36,19 @@
     }
 }
 
-int сalendar::get_day() const noexcept {
+int calendar::get_day() const noexcept {
     return day;
 }
 
-int сalendar::get_month() const noexcept {
+int calendar::get_month() const noexcept {
     return month;
 }
 
-int сalendar::get_year() const noexcept {
+int calendar::get_year() const noexcept {
     return year;
 }
 
-bool сalendar::is_leap_year(int year) const noexcept {
+bool calendar::is_leap_year(int year) const noexcept {
     if (year % 4) {
         return false;
     }
@@ -64,7 +62,7 @@ bool сalendar::is_leap_year(int year) const noexcept {
     }
 }
 
-int сalendar::days_in_month(int month, int year) const noexcept {
+int calendar::days_in_month(int month, int year) const noexcept {
     static const int days[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     if ((month == 2) && is_leap_year(year)) {
@@ -76,10 +74,9 @@ int сalendar::days_in_month(int month, int year) const noexcept {
 
 
 
-expense_node::expense_node() noexcept 
-: amount(amount) {}
+expense_node::expense_node() : amount(0) {}
 
-expense_node::expense_node(сalendar date, const std::string& name, double amount)
+expense_node::expense_node(calendar date, const std::string& name, double amount)
 : date(date), name(name), amount(amount) {
     if (name.empty()) {
         throw (std::invalid_argument("Name cannot be empty"));
@@ -90,7 +87,7 @@ expense_node::expense_node(сalendar date, const std::string& name, double amoun
     }
 }
 
-void expense_node::add_expense(сalendar date, double amount) {
+void expense_node::update_expense(calendar date, double amount) {
     if (amount < 0) {
         throw (std::invalid_argument("Amount cannot be negative"));
     }
@@ -99,7 +96,7 @@ void expense_node::add_expense(сalendar date, double amount) {
     this->amount += amount;
 }
 
-сalendar expense_node::get_date() const noexcept {
+calendar expense_node::get_date() const noexcept {
     return date;
 }
 
@@ -149,14 +146,14 @@ std::vector<std::string> expense_tree::split_path(const std::string& path) {
     return nodes;
 }
 
-void expense_tree::add_expense(сalendar date, const std::string& path, double amount) {
+void expense_tree::add_expense(calendar date, const std::string& path, double amount) {
     std::vector<std::string> nodes = split_path(path);
 
     expense_node* current = &root;
 
     for (const auto& node : nodes) {
         current = current->get_or_create_child(node);
-        current->add_expense(date, amount);
+        current->update_expense(date, amount);
     }
 };
 
