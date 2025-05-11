@@ -9,15 +9,15 @@ add_subdirectory(
 )
 
 add_library(
-    expense
-    expense/expense.cpp
-    expense/expense.hpp
-)
-
-add_library(
     parser
     parser/parser.cpp
     parser/parser.hpp
+)
+
+add_library(
+    expense
+    expense/expense.cpp
+    expense/expense.hpp
 )
 
 add_executable(
@@ -29,6 +29,6 @@ target_link_libraries(
     BudgetTest
     gtest
     gtest_main
-    expense
     parser
+    expense
 )
