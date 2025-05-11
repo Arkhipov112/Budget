@@ -128,7 +128,10 @@ std::vector<expense_node*> expense_node::get_children() {
 }
 
 expense_node* expense_node::get_or_create_child(const std::string& name) {
-    return &children[name];
+    expense_node* res = &children[name];
+    res->name = name;
+
+    return res;
 }
 
 
