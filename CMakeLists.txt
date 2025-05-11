@@ -4,6 +4,10 @@ set(CMAKE_CXX_STANDARD 14)
 
 project(Budget)
 
+add_subdirectory(
+    googletest
+)
+
 add_library(
     expense
     expense/expense.cpp
@@ -23,6 +27,8 @@ add_executable(
 
 target_link_libraries(
     BudgetTest
+    gtest
+    gtest_main
     expense
     parser
 )

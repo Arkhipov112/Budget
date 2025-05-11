@@ -3,7 +3,7 @@
 
 #include "expense.hpp"
 
-calendar::calendar() noexcept : day(0), month(0), year(0) {}
+calendar::calendar() : day(0), month(0), year(0) {}
 
 calendar::calendar(const std::string& dd_mm_yyyy) {
     std::vector<std::string> date;
@@ -74,7 +74,7 @@ int calendar::days_in_month(int month, int year) const noexcept {
 
 
 
-expense_node::expense_node() noexcept : amount(0) {}
+expense_node::expense_node() : amount(0) {}
 
 expense_node::expense_node(calendar date, const std::string& name, double amount)
 : date(date), name(name), amount(amount) {
