@@ -12,9 +12,9 @@ int main() {
     );
 
     std::istringstream iss_budget(
-        "Авто 6000\n"                   \
-        "Продукты + Общепит 10000\n"    \
-        "Алкоголь:Пиво 900"
+        "Auto 6000\n"                   \
+        "Products + Catering 10000\n"   \
+        "Alcohol:Beer 900"
     );
 
     expense_tree et = parser::parse_expenses(iss_expenses);
