@@ -1,7 +1,7 @@
+#include "parser.hpp"
+
 #include <sstream>
 #include <stdexcept>
-
-#include "parser.hpp"
 
 namespace {
 	const int EXPENSES_PARSER_COUNT = 3;
@@ -33,13 +33,15 @@ budget parser::parse_budget(std::istream& in) {
 	while (std::getline(in, line)) {
 		std::vector<std::string> temp = split(line, " +");
 
-		std::pair<std::vector<std::string>, double> pair;
-		for (int i = 0; i < temp.size() - 1; ++i) {
-			pair.first.push_back(temp[i]);
-		}
-		pair.second = std::stod(temp[temp.size() - 1]);
+		std::pair<std::string, double> pair;
 
-		res.push_back(pair);
+		size_t len = temp.size();
+		pair.second = std::stod(temp[len - 1]);
+		for (size_t i = 0; i < len - 1; ++i) {
+			pair.first = temp[i];
+
+			res.push_back(pair);
+		}
 	}
 
 	return res;

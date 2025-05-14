@@ -1,7 +1,8 @@
-#include <sstream>
-
 #include "../expense/expense.hpp"
 #include "../parser/parser.hpp"
+
+#include <iomanip>
+#include <sstream>
 
 int main() {
     std::istringstream iss_expenses(
@@ -19,4 +20,14 @@ int main() {
 
     expense_tree et = parser::parse_expenses(iss_expenses);
     budget b = parser::parse_budget(iss_budget);
+
+    for (size_t i = 0; i < b.size(); ++i) {
+        double amount = et.find_expense(b[i].first)->get_amount();
+    
+        std::cout << std::left << std::setw(10) << b[i].first;
+        std::cout << std::left << std::setw(10) << b[i].second;
+        std::cout << std::left << std::setw(10) << amount;
+        std::cout << std::left << std::setw(10) << (amount / b[i].second) * 100 << '%';
+        std::cout << std::endl;
+    }
 }

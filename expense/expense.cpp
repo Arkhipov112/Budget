@@ -1,7 +1,7 @@
+#include "expense.hpp"
+
 #include <sstream>
 #include <stdexcept>
-
-#include "expense.hpp"
 
 calendar::calendar() : day(0), month(0), year(0) {}
 
@@ -76,8 +76,7 @@ int calendar::days_in_month(int month, int year) const noexcept {
 
 expense_node::expense_node() : amount(0) {}
 
-expense_node::expense_node(calendar date, const std::string& name, double amount)
-: date(date), name(name), amount(amount) {
+expense_node::expense_node(const calendar& date, const std::string& name, double amount) : date(date), name(name), amount(amount) {
     if (name.empty()) {
         throw (std::invalid_argument("Name cannot be empty"));
     }
@@ -87,7 +86,7 @@ expense_node::expense_node(calendar date, const std::string& name, double amount
     }
 }
 
-void expense_node::update_expense(calendar date, double amount) {
+void expense_node::update_expense(const calendar& date, double amount) {
     if (amount < 0) {
         throw (std::invalid_argument("Amount cannot be negative"));
     }
@@ -149,7 +148,7 @@ std::vector<std::string> expense_tree::split_path(const std::string& path) const
     return nodes;
 }
 
-void expense_tree::add_expense(calendar date, const std::string& path, double amount) {
+void expense_tree::add_expense(const calendar& date, const std::string& path, double amount) {
     std::vector<std::string> nodes = split_path(path);
 
     expense_node* current = &root;

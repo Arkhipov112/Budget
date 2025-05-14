@@ -3,12 +3,12 @@
 #include <string>
 #include <vector>
 
-typedef std::vector<std::pair<std::vector<std::string>, double>> budget;
+typedef std::vector<std::pair<std::string, double>> budget;
 
-struct calendar final {
+class calendar final {
 public:
     calendar();
-    calendar(const std::string& dd_mm_yyyy);
+    explicit calendar(const std::string& dd_mm_yyyy);
 
     int get_day() const noexcept;
     int get_month() const noexcept;
@@ -23,12 +23,12 @@ private:
 
 
 
-struct expense_node final {
+class expense_node final {
 public:
     expense_node();
-    expense_node(calendar data, const std::string& name, double amount);
+    explicit expense_node(const calendar& data, const std::string& name, double amount);
 
-    void update_expense(calendar date, double amount);
+    void update_expense(const calendar& date, double amount);
 
     calendar get_date() const noexcept;
     std::string get_name() const noexcept;
@@ -49,9 +49,9 @@ private:
 
 
 
-struct expense_tree final {
+class expense_tree final {
 public:
-    void add_expense(calendar date, const std::string& path, double amount);
+    void add_expense(const calendar& date, const std::string& path, double amount);
     expense_node* find_expense(const std::string& path);
 
 private:

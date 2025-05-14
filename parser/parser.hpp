@@ -1,12 +1,14 @@
 #pragma once
+#include "../expense/expense.hpp"
+
 #include <iostream>
 #include <string>
 #include <vector>
 
-#include "../expense/expense.hpp"
-
 class parser final {
 public:
+	parser() = delete;
+
 	static expense_tree parse_expenses(std::istream& in);
 	static budget parse_budget(std::istream& in);
 
