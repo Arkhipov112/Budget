@@ -18,16 +18,9 @@ int main() {
         "Alcohol:Beer 900"
     );
 
-    expense_tree et = parser::parse_expenses(iss_expenses);
-    budget b = parser::parse_budget(iss_budget);
+    expense_tree et;
+    et.add_expense("Auto:Fuel", expense_node(calendar("12.12.2012"), 200));
+    et.add_expense("Auto:Other", expense_node(calendar("12.12.2012"), 200));
 
-    for (size_t i = 0; i < b.size(); ++i) {
-        double amount = et.find_expense(b[i].first)->get_amount();
-    
-        std::cout << std::left << std::setw(10) << b[i].first;
-        std::cout << std::left << std::setw(10) << b[i].second;
-        std::cout << std::left << std::setw(10) << amount;
-        std::cout << std::left << std::setw(10) << (amount / b[i].second) * 100 << '%';
-        std::cout << std::endl;
-    }
+    std::cout << et.find_expense("Auto")->amount << std::endl;
 }

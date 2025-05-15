@@ -23,27 +23,15 @@ private:
 
 
 
-class expense_node final {
+struct expense_node final {
 public:
     expense_node();
-    explicit expense_node(const calendar& data, const std::string& name, double amount);
+    expense_node(const calendar& date, double amount);
 
-    void update_expense(const calendar& date, double amount);
-
-    calendar get_date() const noexcept;
-    std::string get_name() const noexcept;
-    double get_amount() const noexcept;
-
-    expense_node* get_child(const std::string& name);
-    std::vector<expense_node*> get_children();
-
-    expense_node* get_or_create_child(const std::string& name);
-
-private:
     calendar date;
-    std::string name;
     double amount;
 
+    std::string name;
     std::map<std::string, expense_node> children;
 };
 
@@ -51,7 +39,7 @@ private:
 
 class expense_tree final {
 public:
-    void add_expense(const calendar& date, const std::string& path, double amount);
+    expense_node* add_expense(const std::string& path, const expense_node& en);
     expense_node* find_expense(const std::string& path);
 
 private:

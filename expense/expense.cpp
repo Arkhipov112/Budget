@@ -76,64 +76,7 @@ int calendar::days_in_month(int month, int year) const noexcept {
 
 expense_node::expense_node() : amount(0) {}
 
-expense_node::expense_node(const calendar& date, const std::string& name, double amount) : date(date), name(name), amount(amount) {
-    if (name.empty()) {
-        throw (std::invalid_argument("Name cannot be empty"));
-    }
-
-    else if (amount < 0) {
-        throw (std::invalid_argument("Amount cannot be negative"));
-    }
-}
-
-void expense_node::update_expense(const calendar& date, double amount) {
-    if (amount < 0) {
-        throw (std::invalid_argument("Amount cannot be negative"));
-    }
-
-    this->date = date;
-    this->amount += amount;
-}
-
-calendar expense_node::get_date() const noexcept {
-    return date;
-}
-
-std::string expense_node::get_name() const noexcept {
-    return name;
-}
-
-double expense_node::get_amount() const noexcept {
-    return amount;
-}
-
-expense_node* expense_node::get_child(const std::string& name) {
-    if (name.empty()) {
-        throw (std::invalid_argument("Name cannot be empty"));
-    }
-
-    auto child = children.find(name);
-    return (child != children.end()) ? &child->second : nullptr;
-}
-
-std::vector<expense_node*> expense_node::get_children() {
-    std::vector<expense_node*> res;
-
-    for (auto& child : children) {
-        res.push_back(&child.second);
-    }
-
-    return res;
-}
-
-expense_node* expense_node::get_or_create_child(const std::string& name) {
-    expense_node* res = &children[name];
-    res->name = name;
-
-    return res;
-}
-
-
+expense_node::expense_node(const calendar& date, double amount) : date(date), amount(amount) {}
 
 std::vector<std::string> expense_tree::split_path(const std::string& path) const {
     std::vector<std::string> nodes;
@@ -148,28 +91,42 @@ std::vector<std::string> expense_tree::split_path(const std::string& path) const
     return nodes;
 }
 
-void expense_tree::add_expense(const calendar& date, const std::string& path, double amount) {
-    std::vector<std::string> nodes = split_path(path);
+expense_node* expense_tree::add_expense(const std::string& path, const expense_node& en) {
+    auto nodes = split_path(path);
 
     expense_node* current = &root;
 
     for (const auto& node : nodes) {
-        current = current->get_or_create_child(node);
-        current->update_expense(date, amount);
+        auto child = current->children.find(node);
+
+        if (child == current->children.end()) {
+            expense_node new_node(en.date, en.amount);
+            new_node.name = node;
+            
+            child = current->children.insert(std::make_pair(node, new_node)).first;
+        }
+
+        current = &(child->second);
     }
-};
+
+    current->children[en.name] = en;
+
+    return &(current->children[en.name]);
+}
 
 expense_node* expense_tree::find_expense(const std::string& path) {
-    std::vector<std::string> nodes = split_path(path);
+    auto nodes = split_path(path);
 
     expense_node* current = &root;
 
-    for (const auto& node : nodes) {
-        current = current->get_child(node);
-        
-        if (!current) {
+    for (const auto node : nodes) {
+        auto child = current->children.find(node);
+
+        if (child == current->children.end()) {
             return nullptr;
         }
+
+        current = &(child->second);
     }
 
     return current;
