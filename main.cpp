@@ -7,7 +7,7 @@
 
 int main(int argc, char* argv[]) {
     if (argc != 5) {
-        throw (std::invalid_argument("Does not match the format"));
+        throw (std::invalid_argument("Format: path_expenses_file path_budget_file date_start date_end"));
     }
 
     std::string path_expenses_file = argv[1];
