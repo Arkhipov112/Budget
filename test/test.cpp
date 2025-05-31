@@ -5,7 +5,7 @@
 #include "test_budget.hpp"
 #include "test_parser.hpp"
 
-int main() {
+int runTests() {
     testing::InitGoogleTest();
 
     return RUN_ALL_TESTS();
