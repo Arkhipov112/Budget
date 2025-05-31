@@ -1,0 +1,4 @@
+24.11.2014 Auto:Fuel 1400
+23.11.2014 Products:Meat 500
+23.11.2014 Products:Bread 90.33
+14.11.2014 Catering:Canteen 190

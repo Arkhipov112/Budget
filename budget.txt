@@ -1,0 +1,3 @@
+Auto 6000
+Products+Catering 10000
+Alcohol:Beer 900
