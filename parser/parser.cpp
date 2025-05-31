@@ -14,7 +14,7 @@ ExpensesTree Parser::parseExpenses(std::istream& in) {
 			expenses_tree.addExpense(split_data[1], expense);
 		}
 
-		catch (std::exception& ex) {
+		catch (std::exception& exception) {
 			continue;
 		}
 	}
@@ -29,18 +29,19 @@ std::vector<Budget> Parser::parseBudget(std::istream& in) {
 	while (std::getline(in, line)) {
 		std::vector<std::string> split_data = splitData(line, " +");
 
-		Budget temp;
-
 		try {
+			std::vector<std::string> path_list;
+
 			for (long i = 0; i < split_data.size() - 1; ++i) {
-				temp.addPath(split_data[i]);
+				path_list.push_back(split_data[i]);
 			}
 
-			temp.setAmount(std::stod(split_data[split_data.size() - 1]));
-			budget.push_back(temp);
+			double amount = std::stod(split_data[split_data.size() - 1]);
+
+			budget.push_back(Budget(path_list, amount));
 		}
 
-		catch (std::exception& ex) {
+		catch (std::exception& exception) {
 			continue;
 		}
 	}

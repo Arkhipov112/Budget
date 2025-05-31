@@ -5,11 +5,7 @@
 #include "../budget/budget.hpp"
 
 TEST(BudgetTest, Setters_Getters) {
-    Budget budget;
-
-    budget.addPath("Auto");
-    budget.addPath("Products");
-    budget.setAmount(1400);
+    Budget budget(std::vector<std::string>("Auto", "Products"), 1400);
 
     EXPECT_EQ(budget.getPathList().size(), 2);
 
